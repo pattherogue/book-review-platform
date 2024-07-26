@@ -1,0 +1,40 @@
+# Python Bytecode
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Flask-specific
+instance/
+*.db
+*.sqlite3
+
+# Virtual Environment
+venv/
+env/
+.env
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Miscellaneous
+*.pot
+*.mo
+*.coverage
+*.tox/
+*.nox/
+*.coverage
+*.hypothesis/
+.coverage.*
+*.cache
+*.pytest_cache
