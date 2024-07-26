@@ -2,6 +2,7 @@
 from flask import Flask, request, jsonify
 import requests
 from create_app import create_app, db
+from models import Cart, Transaction
 
 app = create_app()
 
@@ -30,7 +31,6 @@ def home():
 @app.route('/api/cart/add', methods=['POST'])
 def add_to_cart():
     data = request.json
-
     required_keys = ['user_id', 'book_id', 'quantity']
     for key in required_keys:
         if key not in data:
