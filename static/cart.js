@@ -38,7 +38,7 @@ function fetchCartItems() {
                     cartContainer.appendChild(itemElement);
                 });
             } else {
-                console.error('cartItems element not found');
+                console.error('Cart container element not found');
             }
         })
         .catch(error => {
