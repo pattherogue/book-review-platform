@@ -29,6 +29,10 @@ def get_book_title(book_id):
 def home():
     return render_template('index.html')
 
+@app.route('/cart')
+def view_cart():
+    return render_template('cart.html')
+
 @app.route('/api/cart/add', methods=['POST'])
 def add_to_cart():
     data = request.json
