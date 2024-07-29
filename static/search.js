@@ -1,6 +1,6 @@
 function searchBooks() {
     const searchTerm = document.getElementById('searchTerm').value;
-    fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchTerm}&key=AIzaSyB-ihBh7hsTBoFXtN86YaGtVrHaqKL0SWU`)
+    fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchTerm}&key=AIzaSyD_7Frvq_7Hg-OBc63im5p4-cJGWuHK5hM`)
         .then(response => response.json())
         .then(data => {
             const results = document.getElementById('results');

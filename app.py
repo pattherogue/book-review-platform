@@ -12,7 +12,7 @@ Session(app)
 # Define database models here or in a separate models file
 
 # Google Books API configuration
-GOOGLE_BOOKS_API_KEY = 'AIzaSyB-ihBh7hsTBoFXtN86YaGtVrHaqKL0SWU'
+GOOGLE_BOOKS_API_KEY = 'AIzaSyD_7Frvq_7Hg-OBc63im5p4-cJGWuHK5hM'
 GOOGLE_BOOKS_API_URL = 'https://www.googleapis.com/books/v1/volumes'
 
 def get_book_price(book_id):
