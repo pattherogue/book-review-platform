@@ -14,12 +14,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function searchBooks() {
-        if (!searchTerm.value.trim()) {
+        const trimmedSearchTerm = searchTerm.value.trim();
+        if (!trimmedSearchTerm) {
             alert('Please enter a search term.');
             return;
         }
 
-        fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(searchTerm.value.trim())}&key=AIzaSyD_7Frvq_7Hg-OBc63im5p4-cJGWuHK5hM`)
+        fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(trimmedSearchTerm)}&key=AIzaSyD_7Frvq_7Hg-OBc63im5p4-cJGWuHK5hM`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -52,9 +53,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function addBookToCart(bookId) {
         const url = '/api/cart/add';
         const data = {
-            user_id: 'defaultUser',
+            user_id: 'defaultUser',  // This should be dynamically set based on your application's user system
             book_id: bookId,
-            quantity: 1
+            quantity: 1  // This can be adjusted if you have an input for quantity
         };
 
         fetch(url, {
