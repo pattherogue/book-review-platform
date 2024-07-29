@@ -139,6 +139,6 @@ def remove_cart_item(cart_id):
     db.session.commit()
     return jsonify({"message": "Cart item removed successfully"}), 200
 
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=8080)
