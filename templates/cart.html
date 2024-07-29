@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My Cart</title>
+    <title>Cart</title>
     <link rel="stylesheet" href="/static/style.css">
     <script src="/static/cart.js"></script>
 </head>
-<body>
+<body onload="fetchCartItems()">
     <h1>Your Cart</h1>
-    <div id="cart-items"></div> <!-- Cart items will be loaded here -->
+    <div id="cartItems"><!-- Cart items will be loaded here --></div>
 </body>
 </html>
