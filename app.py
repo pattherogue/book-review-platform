@@ -1,5 +1,4 @@
-# app.py
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import requests
 from create_app import create_app, db
 from models import Cart, Transaction
@@ -28,7 +27,7 @@ def get_book_title(book_id):
 
 @app.route('/')
 def home():
-    return "Welcome to the Book Review Platform!"
+    return render_template('index.html')
 
 @app.route('/api/cart/add', methods=['POST'])
 def add_to_cart():
