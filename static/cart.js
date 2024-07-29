@@ -1,27 +1,32 @@
 function fetchCartItems() {
     const url = `/api/cart/defaultUser`;  // Assuming 'defaultUser' is your placeholder user ID
     fetch(url)
-    .then(response => response.json())
-    .then(items => {
-        const cartContainer = document.getElementById('cartItems');
-        cartContainer.innerHTML = ''; // Clear existing items
-        items.forEach(item => {
-            const itemElement = document.createElement('div');
-            itemElement.innerHTML = `
-                <p>${item.title} - Quantity: ${item.quantity}</p>
-                <input type="number" value="${item.quantity}" id="qty-${item.cart_id}">
-                <button onclick="editCartItem('${item.cart_id}')">Edit</button>
-                <button onclick="removeCartItem('${item.cart_id}')">Remove</button>
-            `;
-            cartContainer.appendChild(itemElement);
-        });
-    })
-    .catch(error => console.error('Error loading cart items:', error));
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(items => {
+            const cartContainer = document.getElementById('cartItems');
+            cartContainer.innerHTML = ''; // Clear existing items
+            items.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.innerHTML = `
+                    <p>${item.title} - Quantity: ${item.quantity}</p>
+                    <input type="number" id="quantity-${item.cart_id}" value="${item.quantity}" min="1">
+                    <button onclick="editCartItem('${item.cart_id}')">Edit</button>
+                    <button onclick="removeCartItem('${item.cart_id}')">Remove</button>
+                `;
+                cartContainer.appendChild(itemElement);
+            });
+        })
+        .catch(error => console.error('Error loading cart items:', error));
 }
 
 function editCartItem(cartId) {
-    const newQuantity = document.getElementById(`qty-${cartId}`).value;
-    const url = `/api/cart/edit`;
+    const newQuantity = document.getElementById(`quantity-${cartId}`).value;
+    const url = '/api/cart/edit';
     const data = {
         cart_id: cartId,
         quantity: newQuantity
@@ -34,44 +39,45 @@ function editCartItem(cartId) {
         },
         body: JSON.stringify(data)
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to edit cart item');
-        }
-        return response.json();
-    })
-    .then(result => {
-        console.log('Cart item updated:', result);
-        alert("Cart item updated successfully!");
-        fetchCartItems(); // Refresh the cart items
-    })
-    .catch(error => {
-        console.error('Error updating cart item:', error);
-        alert("Error updating cart item: " + error.message);
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to update cart item');
+            }
+            return response.json();
+        })
+        .then(result => {
+            console.log('Cart item updated:', result);
+            alert("Cart item updated successfully!");
+            fetchCartItems();  // Refresh cart items
+        })
+        .catch(error => {
+            console.error('Error updating cart item:', error);
+            alert("Error updating cart item: " + error.message);
+        });
 }
 
 function removeCartItem(cartId) {
     const url = `/api/cart/${cartId}`;
+
     fetch(url, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        }
+        method: 'DELETE'
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to remove cart item');
-        }
-        return response.json();
-    })
-    .then(result => {
-        console.log('Cart item removed:', result);
-        alert("Cart item removed successfully!");
-        fetchCartItems(); // Refresh the cart items
-    })
-    .catch(error => {
-        console.error('Error removing cart item:', error);
-        alert("Error removing cart item: " + error.message);
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to remove cart item');
+            }
+            return response.json();
+        })
+        .then(result => {
+            console.log('Cart item removed:', result);
+            alert("Cart item removed successfully!");
+            fetchCartItems();  // Refresh cart items
+        })
+        .catch(error => {
+            console.error('Error removing cart item:', error);
+            alert("Error removing cart item: " + error.message);
+        });
 }
+
+// Fetch cart items when the page loads
+document.addEventListener('DOMContentLoaded', fetchCartItems);

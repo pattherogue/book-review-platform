@@ -1,49 +1,30 @@
 function searchBooks() {
-    console.log('Function searchBooks triggered');
     const searchTerm = document.getElementById('searchTerm').value;
-    const encodedSearchTerm = encodeURIComponent(searchTerm);
-    const url = `https://www.googleapis.com/books/v1/volumes?q=${encodedSearchTerm}&key=AIzaSyB-ihBh7hsTBoFXtN86YaGtVrHaqKL0SWU`;
-
-    console.log("Script loaded!");
-
-    fetch(url)
-    .then(response => {
-        console.log('API response received');
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Data processed', data);
-        const results = document.getElementById('results');
-        if (data.items && data.items.length > 0) {
-            results.innerHTML = data.items.map(book => {
-                const volumeInfo = book.volumeInfo;
-                return `<div>
-                            <h3>${volumeInfo.title}</h3>
-                            <p>${volumeInfo.authors ? volumeInfo.authors.join(', ') : 'No authors available'}</p>
-                            <button onclick="addBookToCart('${volumeInfo.title.replace(/'/g, "\\'")}', '${book.id}')">Add to Cart</button>
-                        </div>`;
-            }).join('');
-        } else {
-            results.innerHTML = '<p>No books found.</p>';
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        document.getElementById('results').innerHTML = `<p>Error fetching books: ${error.message}</p>`;
-    });
+    fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchTerm}&key=AIzaSyB-ihBh7hsTBoFXtN86YaGtVrHaqKL0SWU`)
+        .then(response => response.json())
+        .then(data => {
+            const results = document.getElementById('results');
+            results.innerHTML = '';
+            data.items.forEach(item => {
+                const bookInfo = item.volumeInfo;
+                const bookElement = document.createElement('div');
+                bookElement.innerHTML = `
+                    <h3>${bookInfo.title}</h3>
+                    <p>${bookInfo.authors ? bookInfo.authors.join(', ') : 'No author information'}</p>
+                    <button onclick="addBookToCart('${bookInfo.title}', '${item.id}')">Add to Cart</button>
+                `;
+                results.appendChild(bookElement);
+            });
+        })
+        .catch(error => console.error('Error:', error));
 }
 
-function addBookToCart(bookId, title) {
-    console.log('Adding book to cart:', title, bookId);
-
+function addBookToCart(title, bookId) {
     const url = '/api/cart/add';
     const data = {
-        user_id: 'defaultUser', // This should be dynamically set based on your application's user system
+        user_id: 'defaultUser',  // This should be dynamically set based on your application's user system
         book_id: bookId,
-        quantity: 1 // This can be adjusted if you have an input for quantity
+        quantity: 1  // This can be adjusted if you have an input for quantity
     };
 
     fetch(url, {
@@ -68,4 +49,3 @@ function addBookToCart(bookId, title) {
         alert("Error adding book to cart: " + error.message);
     });
 }
-

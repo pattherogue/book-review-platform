@@ -8,18 +8,8 @@
 </head>
 <body>
     <h1>Your Cart</h1>
-    <div id="cartItems">
-        {% for item in items %}
-            <div>
-                <p>{{ item.title }} - Quantity: {{ item.quantity }}</p>
-                <button onclick="editCartItem('{{ item.cart_id }}', this.parentNode.querySelector('input[type=number]').value)">Edit</button>
-                <input type="number" value="{{ item.quantity }}" min="1">
-                <button onclick="removeCartItem('{{ item.cart_id }}')">Remove</button>
-            </div>
-        {% else %}
-            <p>Your cart is empty!</p>
-        {% endfor %}
-    </div>
+    <div id="cartItems"></div>
+
     <script src="/static/cart.js"></script>
 </body>
 </html>
