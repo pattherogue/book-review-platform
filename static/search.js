@@ -1,12 +1,11 @@
-// Function to search books
 function searchBooks() {
-    const searchTerm = document.getElementById('searchTerm').value;
-    if (!searchTerm) {
+    const searchTerm = document.getElementById('searchTerm');
+    if (!searchTerm || !searchTerm.value.trim()) {
         alert('Please enter a search term.');
         return;
     }
 
-    fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchTerm}&key=AIzaSyD_7Frvq_7Hg-OBc63im5p4-cJGWuHK5hM`)
+    fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchTerm.value.trim()}&key=AIzaSyD_7Frvq_7Hg-OBc63im5p4-cJGWuHK5hM`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -15,6 +14,11 @@ function searchBooks() {
         })
         .then(data => {
             const results = document.getElementById('results');
+            if (!results) {
+                console.error('Results container not found');
+                return;
+            }
+
             results.innerHTML = '';
 
             if (data.items && data.items.length > 0) {
@@ -32,14 +36,16 @@ function searchBooks() {
                 results.innerHTML = '<p>No results found</p>';
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error:', error);
+            alert("Error: " + error.message);
+        });
 }
 
-// Function to add a book to the cart
 function addBookToCart(bookId) {
     const url = '/api/cart/add';
     const data = {
-        user_id: 'defaultUser',  // Replace this with a dynamic user ID if applicable
+        user_id: 'defaultUser',
         book_id: bookId,
         quantity: 1
     };
@@ -67,8 +73,14 @@ function addBookToCart(bookId) {
     });
 }
 
-// Attach the searchBooks function to the form submit event
-document.getElementById('searchForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    searchBooks();
+document.addEventListener('DOMContentLoaded', function() {
+    const searchForm = document.getElementById('searchForm');
+    if (!searchForm) {
+        console.error('Search form not found');
+        return;
+    }
+    searchForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        searchBooks();
+    });
 });
