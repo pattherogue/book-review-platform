@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Review Platform</title>
+    <title>Book Search</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>Welcome to the Book Review Platform</h1>
-    <form id="searchForm">
-        <input type="text" id="searchQuery" placeholder="Search for books..." required>
-        <button type="submit">Search</button>
-    </form>
-    <div id="searchResults"></div>
+    <h1>Search for Books</h1>
+    <input type="text" id="searchTerm" placeholder="Enter book title...">
+    <button onclick="searchBooks()">Search</button>
+    <div id="results"></div>
 
     <script src="/static/search.js"></script>
 </body>

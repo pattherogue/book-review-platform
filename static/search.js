@@ -1,16 +1,21 @@
 function searchBooks() {
+    console.log('Function searchBooks triggered');
     const searchTerm = document.getElementById('searchTerm').value;
     const encodedSearchTerm = encodeURIComponent(searchTerm);
     const url = `https://www.googleapis.com/books/v1/volumes?q=${encodedSearchTerm}&key=AIzaSyB-ihBh7hsTBoFXtN86YaGtVrHaqKL0SWU`;
 
+    console.log("Script loaded!");
+
     fetch(url)
     .then(response => {
+        console.log('API response received');
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
         return response.json();
     })
     .then(data => {
+        console.log('Data processed', data);
         const results = document.getElementById('results');
         if (data.items && data.items.length > 0) {
             results.innerHTML = data.items.map(book => {
@@ -29,20 +34,4 @@ function searchBooks() {
         console.error('Error:', error);
         document.getElementById('results').innerHTML = `<p>Error fetching books: ${error.message}</p>`;
     });
-}
-
-function addBookToCart(title, bookId) {
-    const userId = 'defaultUser'; // Example user ID
-    const quantity = 1; // Default quantity
-
-    fetch('/api/cart/add', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ user_id: userId, book_id: bookId, quantity: quantity })
-    })
-    .then(response => response.json())
-    .then(data => alert(`${title} added to cart!`))
-    .catch(error => console.error('Error adding book to cart:', error));
 }
