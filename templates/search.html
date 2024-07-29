@@ -1,38 +1,24 @@
-document.getElementById('searchForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const query = document.getElementById('searchQuery').value;
-    fetch(`${GOOGLE_BOOKS_API_URL}?q=${query}&key=${GOOGLE_BOOKS_API_KEY}`)
-        .then(response => response.json())
-        .then(data => {
-            const results = document.getElementById('searchResults');
-            results.innerHTML = '';
-            data.items.forEach(book => {
-                const bookElement = document.createElement('div');
-                bookElement.innerHTML = `
-                    <h4>${book.volumeInfo.title}</h4>
-                    <button onclick="addToCart('${book.id}')">Add to Cart</button>
-                `;
-                results.appendChild(bookElement);
-            });
-        })
-        .catch(error => console.error('Error:', error));
-});
-
-function addToCart(bookId) {
-    fetch('/api/cart/add', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            user_id: 'user123',  // Static user for demo, replace as needed
-            book_id: bookId,
-            quantity: 1
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.message);
-    })
-    .catch(error => console.error('Error adding to cart:', error));
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search for Books</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/cart">View Cart</a>
+        </nav>
+    </header>
+    <h1>Search for Books</h1>
+    <form id="searchForm">
+        <input type="text" id="searchTerm" placeholder="Enter book title...">
+        <button type="submit">Search</button>
+    </form>
+    <div id="results"></div>
+    <script src="/static/search.js"></script>
+</body>
+</html>

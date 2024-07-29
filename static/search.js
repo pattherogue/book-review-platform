@@ -1,20 +1,29 @@
 function searchBooks() {
     const searchTerm = document.getElementById('searchTerm').value;
     fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchTerm}&key=AIzaSyD_7Frvq_7Hg-OBc63im5p4-cJGWuHK5hM`)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
             const results = document.getElementById('results');
             results.innerHTML = '';
-            data.items.forEach(item => {
-                const bookInfo = item.volumeInfo;
-                const bookElement = document.createElement('div');
-                bookElement.innerHTML = `
-                    <h3>${bookInfo.title}</h3>
-                    <p>${bookInfo.authors ? bookInfo.authors.join(', ') : 'No author information'}</p>
-                    <button onclick="addBookToCart('${bookInfo.title}', '${item.id}')">Add to Cart</button>
-                `;
-                results.appendChild(bookElement);
-            });
+            if (data.items) {
+                data.items.forEach(item => {
+                    const bookInfo = item.volumeInfo;
+                    const bookElement = document.createElement('div');
+                    bookElement.innerHTML = `
+                        <h3>${bookInfo.title}</h3>
+                        <p>${bookInfo.authors ? bookInfo.authors.join(', ') : 'No author information'}</p>
+                        <button onclick="addBookToCart('${bookInfo.title}', '${item.id}')">Add to Cart</button>
+                    `;
+                    results.appendChild(bookElement);
+                });
+            } else {
+                results.innerHTML = '<p>No results found</p>';
+            }
         })
         .catch(error => console.error('Error:', error));
 }
@@ -49,3 +58,9 @@ function addBookToCart(title, bookId) {
         alert("Error adding book to cart: " + error.message);
     });
 }
+
+// Attach the searchBooks function to the form submit event
+document.getElementById('searchForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    searchBooks();
+});

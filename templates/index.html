@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Search</title>
+    <title>Search for Books</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -14,11 +14,11 @@
         </nav>
     </header>
     <h1>Search for Books</h1>
-    <input type="text" id="searchTerm" placeholder="Enter book title...">
-    <button onclick="searchBooks()">Search</button>
-    <div id="results"></div>
-    
+    <div>
+        <input type="text" id="searchInput" placeholder="Enter book title...">
+        <button onclick="searchBooks()">Search</button>
+    </div>
+    <div id="searchResults"></div>
     <script src="/static/search.js"></script>
-    <script src="/static/cart.js"></script>
 </body>
 </html>
