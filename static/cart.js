@@ -13,26 +13,33 @@ function fetchCartItems() {
             const loadingMessage = document.getElementById('loadingMessage');
             const cartContainer = document.getElementById('cartItems');
 
-            // Check if elements exist before trying to access their properties
-            if (loadingMessage) {
-                loadingMessage.style.display = 'none';
+            if (!loadingMessage) {
+                console.error('Error: Element with ID "loadingMessage" not found');
+                alert('Error: Element with ID "loadingMessage" not found');
+                return;
             }
-            if (cartContainer) {
-                cartContainer.style.display = 'block';
-                // Clear existing items
-                cartContainer.innerHTML = '';
+            if (!cartContainer) {
+                console.error('Error: Element with ID "cartItems" not found');
+                alert('Error: Element with ID "cartItems" not found');
+                return;
+            }
 
-                items.forEach(item => {
-                    const itemElement = document.createElement('div');
-                    itemElement.innerHTML = `
-                        <p>${item.title} - Quantity: ${item.quantity}</p>
-                        <input type="number" value="${item.quantity}" id="quantity-${item.cart_id}">
-                        <button onclick="editCartItem('${item.cart_id}', document.getElementById('quantity-${item.cart_id}').value)">Edit</button>
-                        <button onclick="removeCartItem('${item.cart_id}')">Remove</button>
-                    `;
-                    cartContainer.appendChild(itemElement);
-                });
-            }
+            loadingMessage.style.display = 'none';
+            cartContainer.style.display = 'block';
+            
+            // Clear existing items
+            cartContainer.innerHTML = '';
+
+            items.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.innerHTML = `
+                    <p>${item.title} - Quantity: ${item.quantity}</p>
+                    <input type="number" value="${item.quantity}" id="quantity-${item.cart_id}">
+                    <button onclick="editCartItem('${item.cart_id}', document.getElementById('quantity-${item.cart_id}').value)">Edit</button>
+                    <button onclick="removeCartItem('${item.cart_id}')">Remove</button>
+                `;
+                cartContainer.appendChild(itemElement);
+            });
         })
         .catch(error => {
             console.error('Error loading cart items:', error);
