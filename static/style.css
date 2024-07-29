@@ -1,0 +1,23 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: #f8f8f8;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+main {
+    padding: 20px;
+    text-align: center;
+}
+
+input[type="text"], button {
+    padding: 10px;
+    margin: 5px;
+}
+
+#searchResults, #cartItems {
+    margin-top: 20px;
+}

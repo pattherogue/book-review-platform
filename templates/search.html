@@ -1,16 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Search and Cart</title>
-</head>
-<body>
-    <h1>Search Books</h1>
-    <input type="text" id="searchQuery" placeholder="Enter book title">
-    <button onclick="searchBooks()">Search</button>
-    <div id="results"></div>
+document.getElementById('searchForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const query = document.getElementById('searchQuery').value;
+    fetch(`${GOOGLE_BOOKS_API_URL}?q=${query}&key=${GOOGLE_BOOKS_API_KEY}`)
+        .then(response => response.json())
+        .then(data => {
+            const results = document.getElementById('searchResults');
+            results.innerHTML = '';
+            data.items.forEach(book => {
+                const bookElement = document.createElement('div');
+                bookElement.innerHTML = `
+                    <h4>${book.volumeInfo.title}</h4>
+                    <button onclick="addToCart('${book.id}')">Add to Cart</button>
+                `;
+                results.appendChild(bookElement);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+});
 
-    <script src="/static/search.js"></script>
-</body>
-</html>
+function addToCart(bookId) {
+    fetch('/api/cart/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            user_id: 'user123',  // Static user for demo, replace as needed
+            book_id: bookId,
+            quantity: 1
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+    })
+    .catch(error => console.error('Error adding to cart:', error));
+}
