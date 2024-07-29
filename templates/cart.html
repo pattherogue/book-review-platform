@@ -2,12 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Cart</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
     <link rel="stylesheet" href="/static/style.css">
-    <script src="/static/cart.js"></script>
 </head>
-<body onload="fetchCartItems()">
+<body>
     <h1>Your Cart</h1>
-    <div id="cartItems"><!-- Cart items will be loaded here --></div>
+    <div id="cartItems">
+        {% for item in items %}
+            <div>
+                <p>{{ item.title }} - Quantity: {{ item.quantity }}</p>
+                <button onclick="editCartItem('{{ item.cart_id }}', this.parentNode.querySelector('input[type=number]').value)">Edit</button>
+                <input type="number" value="{{ item.quantity }}" min="1">
+                <button onclick="removeCartItem('{{ item.cart_id }}')">Remove</button>
+            </div>
+        {% else %}
+            <p>Your cart is empty!</p>
+        {% endfor %}
+    </div>
+    <script src="/static/cart.js"></script>
 </body>
 </html>

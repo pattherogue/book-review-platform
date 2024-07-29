@@ -1,10 +1,14 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, session, request, jsonify, render_template
+from flask_session import Session  # You need to install this with 'pip install Flask-Session'
 import requests
 from create_app import create_app, db
 from models import Cart, Transaction
 from datetime import datetime
 
 app = create_app()
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 # Google Books API configuration
 GOOGLE_BOOKS_API_KEY = 'AIzaSyB-ihBh7hsTBoFXtN86YaGtVrHaqKL0SWU'
@@ -23,12 +27,17 @@ def get_book_title(book_id):
 # Home page route
 @app.route('/')
 def home():
+    # Ensure a user session is started
+    if 'user_id' not in session:
+        session['user_id'] = request.remote_addr  # Example of setting a session, use a better system in production
     return render_template('index.html')
 
 # Cart view route
 @app.route('/cart')
-def cart():
-    return render_template('cart.html')
+def view_cart():
+    user_id = session.get('user_id', 'defaultUser')  # Default to 'defaultUser' if not set
+    items = Cart.query.filter_by(user_id=user_id).all()
+    return render_template('cart.html', items=items)
 
 # API Endpoints
 
