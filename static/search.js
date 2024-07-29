@@ -1,5 +1,11 @@
+// Function to search books
 function searchBooks() {
     const searchTerm = document.getElementById('searchTerm').value;
+    if (!searchTerm) {
+        alert('Please enter a search term.');
+        return;
+    }
+
     fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchTerm}&key=AIzaSyD_7Frvq_7Hg-OBc63im5p4-cJGWuHK5hM`)
         .then(response => {
             if (!response.ok) {
@@ -10,14 +16,15 @@ function searchBooks() {
         .then(data => {
             const results = document.getElementById('results');
             results.innerHTML = '';
-            if (data.items) {
+
+            if (data.items && data.items.length > 0) {
                 data.items.forEach(item => {
                     const bookInfo = item.volumeInfo;
                     const bookElement = document.createElement('div');
                     bookElement.innerHTML = `
                         <h3>${bookInfo.title}</h3>
                         <p>${bookInfo.authors ? bookInfo.authors.join(', ') : 'No author information'}</p>
-                        <button onclick="addBookToCart('${bookInfo.title}', '${item.id}')">Add to Cart</button>
+                        <button onclick="addBookToCart('${item.id}')">Add to Cart</button>
                     `;
                     results.appendChild(bookElement);
                 });
@@ -28,12 +35,13 @@ function searchBooks() {
         .catch(error => console.error('Error:', error));
 }
 
-function addBookToCart(title, bookId) {
+// Function to add a book to the cart
+function addBookToCart(bookId) {
     const url = '/api/cart/add';
     const data = {
-        user_id: 'defaultUser',  // This should be dynamically set based on your application's user system
+        user_id: 'defaultUser',  // Replace this with a dynamic user ID if applicable
         book_id: bookId,
-        quantity: 1  // This can be adjusted if you have an input for quantity
+        quantity: 1
     };
 
     fetch(url, {
