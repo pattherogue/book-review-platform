@@ -7,14 +7,17 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <header>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/cart">View Cart</a>
+        </nav>
+    </header>
     <h1>Search for Books</h1>
     <input type="text" id="searchTerm" placeholder="Enter book title...">
     <button onclick="searchBooks()">Search</button>
     <div id="results"></div>
     
-    <!-- Link to view the cart -->
-    <a href="/cart" class="view-cart">View Cart</a>
-
     <script src="/static/search.js"></script>
     <script src="/static/cart.js"></script>
 </body>
