@@ -132,5 +132,13 @@ def get_book_orders_count(book_id):
     count = Transaction.query.filter_by(book_id=book_id).count()
     return jsonify({"book_id": book_id, "order_count": count}), 200
 
+@app.route('/api/cart/<cart_id>', methods=['DELETE'])
+def remove_cart_item(cart_id):
+    cart_item = Cart.query.get_or_404(cart_id)
+    db.session.delete(cart_item)
+    db.session.commit()
+    return jsonify({"message": "Cart item removed successfully"}), 200
+
+
 if __name__ == '__main__':
     app.run(debug=True)
