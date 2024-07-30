@@ -7,38 +7,46 @@ document.addEventListener('DOMContentLoaded', function() {
 
     searchForm.addEventListener('submit', function(event) {
         event.preventDefault();
-        const searchTerm = document.getElementById('searchTerm').value.trim();
-        if (!searchTerm) {
+        const searchTerm = document.getElementById('searchTerm');
+        if (!searchTerm || !searchTerm.value.trim()) {
             alert("Please enter a search term.");
             return;
         }
-        searchBooks(searchTerm);
+        searchBooks(searchTerm.value.trim());
     });
-
-    function searchBooks(searchTerm) {
-        fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(searchTerm)}&key=AIzaSyD_7Frvq_7Hg-OBc63im5p4-cJGWuHK5hM`)
-        .then(response => response.json())
-        .then(data => {
-            const results = document.getElementById('results');
-            results.innerHTML = '';
-            data.items.forEach(item => {
-                const bookInfo = item.volumeInfo;
-                const bookElement = document.createElement('div');
-                bookElement.innerHTML = `
-                    <h3>${bookInfo.title}</h3>
-                    <p>${bookInfo.authors ? bookInfo.authors.join(', ') : 'No author information'}</p>
-                    <button onclick="addBookToCart('${item.id}')">Add to Cart</button>
-                `;
-                results.appendChild(bookElement);
-            });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert("Error: " + error.message);
-        });
-    }
-    
 });
+
+function searchBooks(searchTerm) {
+    fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(searchTerm)}&key=AIzaSyD_7Frvq_7Hg-OBc63im5p4-cJGWuHK5hM`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch books');
+        }
+        return response.json();
+    })
+    .then(data => {
+        const results = document.getElementById('results');
+        if (!results) {
+            console.error('Results container not found');
+            return;
+        }
+        results.innerHTML = '';
+        data.items.forEach(item => {
+            const bookInfo = item.volumeInfo;
+            const bookElement = document.createElement('div');
+            bookElement.innerHTML = `
+                <h3>${bookInfo.title}</h3>
+                <p>${bookInfo.authors ? bookInfo.authors.join(', ') : 'No author information'}</p>
+                <button onclick="addBookToCart('${item.id}')">Add to Cart</button>
+            `;
+            results.appendChild(bookElement);
+        });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Error: " + error.message);
+    });
+}
 
 function addBookToCart(bookId) {
     const url = '/api/cart/add';
@@ -62,7 +70,6 @@ function addBookToCart(bookId) {
         return response.json();
     })
     .then(result => {
-        console.log('Book added to cart:', result);
         alert("Book added to cart successfully!");
     })
     .catch(error => {
