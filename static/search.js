@@ -31,16 +31,20 @@ function searchBooks(searchTerm) {
             return;
         }
         results.innerHTML = '';
-        data.items.forEach(item => {
-            const bookInfo = item.volumeInfo;
-            const bookElement = document.createElement('div');
-            bookElement.innerHTML = `
-                <h3>${bookInfo.title}</h3>
-                <p>${bookInfo.authors ? bookInfo.authors.join(', ') : 'No author information'}</p>
-                <button onclick="addBookToCart('${item.id}')">Add to Cart</button>
-            `;
-            results.appendChild(bookElement);
-        });
+        if (data.items) {
+            data.items.forEach(item => {
+                const bookInfo = item.volumeInfo;
+                const bookElement = document.createElement('div');
+                bookElement.innerHTML = `
+                    <h3>${bookInfo.title}</h3>
+                    <p>${bookInfo.authors ? bookInfo.authors.join(', ') : 'No author information'}</p>
+                    <button onclick="addBookToCart('${item.id}')">Add to Cart</button>
+                `;
+                results.appendChild(bookElement);
+            });
+        } else {
+            results.innerHTML = '<p>No results found</p>';
+        }
     })
     .catch(error => {
         console.error('Error:', error);
@@ -51,7 +55,7 @@ function searchBooks(searchTerm) {
 function addBookToCart(bookId) {
     const url = '/api/cart/add';
     const data = {
-        user_id: 'defaultUser',
+        user_id: 'defaultUser', // Adjust as needed to match your user management system
         book_id: bookId,
         quantity: 1
     };
