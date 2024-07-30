@@ -17,8 +17,12 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function searchBooks(searchTerm) {
-    fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(searchTerm)}&key=AIzaSyD_7Frvq_7Hg-OBc63im5p4-cJGWuHK5hM`)
+    const encodedSearchTerm = encodeURIComponent(searchTerm);
+    fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodedSearchTerm}&key=AIzaSyD_7Frvq_7Hg-OBc63im5p4-cJGWuHK5hM`)
     .then(response => {
+        if (response.status === 429) {
+            throw new Error('Rate limit exceeded. Please try again later.');
+        }
         if (!response.ok) {
             throw new Error('Failed to fetch books');
         }
@@ -26,12 +30,8 @@ function searchBooks(searchTerm) {
     })
     .then(data => {
         const results = document.getElementById('results');
-        if (!results) {
-            console.error('Results container not found');
-            return;
-        }
-        results.innerHTML = '';
-        if (data.items) {
+        results.innerHTML = ''; // Clear previous results
+        if (data.items && data.items.length > 0) {
             data.items.forEach(item => {
                 const bookInfo = item.volumeInfo;
                 const bookElement = document.createElement('div');
@@ -43,7 +43,7 @@ function searchBooks(searchTerm) {
                 results.appendChild(bookElement);
             });
         } else {
-            results.innerHTML = '<p>No results found</p>';
+            results.innerHTML = '<p>No results found.</p>';
         }
     })
     .catch(error => {
@@ -55,7 +55,7 @@ function searchBooks(searchTerm) {
 function addBookToCart(bookId) {
     const url = '/api/cart/add';
     const data = {
-        user_id: 'defaultUser', // Adjust as needed to match your user management system
+        user_id: 'defaultUser',
         book_id: bookId,
         quantity: 1
     };
